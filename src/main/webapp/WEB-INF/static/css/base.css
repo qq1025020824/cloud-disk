@@ -1,0 +1,23 @@
+/**
+*@author huangbbin
+ */
+*{
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+html{
+
+    font-family: sans-serif;
+    /*解决iPhone和安卓浏览器横屏改变字体大小的问题*/
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+ul{
+    list-style: none;
+}
+a{
+    text-decoration: none;
+}

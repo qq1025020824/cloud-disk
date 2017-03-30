@@ -8,6 +8,7 @@
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="suffix" value=".jsp"/>
         <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
     </bean>
 
     <bean id="commonsMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
