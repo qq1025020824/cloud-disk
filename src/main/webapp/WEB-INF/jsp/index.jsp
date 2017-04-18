@@ -12,6 +12,6 @@
     <title>Document</title>
 </head>
 <body>
-<jsp:include page="../template/header.jsp"/>
+<jsp:include page="include/header.jsp"/>
 </body>
 </html>
