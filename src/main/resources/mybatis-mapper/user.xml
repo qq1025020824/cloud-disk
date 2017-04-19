@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.abo.dao.UserDao">
+
+	<select id="countUserByPhone" parameterType="java.lang.String"
+		resultType="Long">
+		select count(*) from user where phone= #{phone}
+	</select>
+
+	<insert id="insertUser" parameterType="com.abo.model.User"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		user(phone,username,password,joindate)
+		values(#{phone},#{username},#{password},#{joindate})
+	</insert>
+
+	<insert id="insertDisk" parameterType="com.abo.model.Disk"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		mydiskinfo(user_id,totalsize,usedsize)
+		values(#{user_id},#{totalSize},#{usedSize})
+	</insert>
+
+	<insert id="insertMyFile" parameterType="com.abo.model.MyFile"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into myfile(user_id,
+		<if test="parent_id!=null">parent_id,</if>
+		name,size,type,path
+		<if test="createdate!=null">,createdate</if>
+		<if test="location!=null">,location</if>
+		)
+		values(#{user_id},
+		<if test="parent_id!=null">#{parent_id},</if>
+		#{name},#{size},#{type},#{path}
+		<if test="createdate!=null">,#{createdate}</if>
+		<if test="location!=null">,#{location}</if>
+		)
+	</insert>
+
+</mapper>
