@@ -52,8 +52,8 @@ public class UserService {
 		//分配网盘
 		Disk disk=new Disk();
 		disk.setUser_id(user.getId());
-		disk.setTotalSize(DEFAULT_TOTAL_SIZE);
-		disk.setUsedSize(0);
+		disk.setTotalsize(DEFAULT_TOTAL_SIZE);
+		disk.setUsedsize(0);
 		if(userDao.insertDisk(disk)==0){
 			/*错误处理*/
 			return false;

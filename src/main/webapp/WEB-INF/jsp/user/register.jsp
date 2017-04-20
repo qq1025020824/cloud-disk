@@ -7,6 +7,7 @@
 <%--     <link rel="stylesheet" href="<%=request.getContextPath()%>/static/css/font-end-header@1.0.0.css">  --%>
 </head>
 <body>
+<jsp:include page="../include/header.jsp"/>
 <div>
         <h3 class="register-title">注册新用户，获取你的专属网盘</h3>
         <form action="<%= request.getContextPath()%>/doRegister" method="post" id="register-form">

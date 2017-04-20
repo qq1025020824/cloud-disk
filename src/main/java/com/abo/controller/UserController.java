@@ -40,11 +40,11 @@ public class UserController extends BaseController{
 		user.setUsername(username);
 		if(userService.createUser(user)){
 			sendMessage("注册成功，请登录。");
-			System.out.println("注册成功，请登录。");
+//			System.out.println("注册成功，请登录。");
 			return "redirect:/login";
 		}else{
 			sendMessage("系统故障，请稍后再试。");
-			System.out.println("系统故障，请稍后再试。");
+//			System.out.println("系统故障，请稍后再试。");
 			return "redirect:/register";
 		}
 	}

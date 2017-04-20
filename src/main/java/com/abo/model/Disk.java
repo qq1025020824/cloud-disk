@@ -3,8 +3,8 @@ package com.abo.model;
 public class Disk {
 	private Long id;
 	private Long user_id;
-	private long totalSize;
-	private long usedSize;
+	private long totalsize;		//单位B(Byte)
+	private long usedsize;		//单位B(Byte)
 	public Long getId() {
 		return id;
 	}
@@ -17,16 +17,16 @@ public class Disk {
 	public void setUser_id(Long user_id) {
 		this.user_id = user_id;
 	}
-	public long getTotalSize() {
-		return totalSize;
+	public long getTotalsize() {
+		return totalsize;
 	}
-	public void setTotalSize(long totalSize) {
-		this.totalSize = totalSize;
+	public void setTotalsize(long totalsize) {
+		this.totalsize = totalsize;
 	}
-	public long getUsedSize() {
-		return usedSize;
+	public long getUsedsize() {
+		return usedsize;
 	}
-	public void setUsedSize(long usedSize) {
-		this.usedSize = usedSize;
+	public void setUsedsize(long usedsize) {
+		this.usedsize = usedsize;
 	}
 }

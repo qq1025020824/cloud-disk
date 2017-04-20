@@ -20,7 +20,7 @@
 		useGeneratedKeys="true" keyProperty="id">
 		insert into
 		mydiskinfo(user_id,totalsize,usedsize)
-		values(#{user_id},#{totalSize},#{usedSize})
+		values(#{user_id},#{totalsize},#{usedsize})
 	</insert>
 
 	<insert id="insertMyFile" parameterType="com.abo.model.MyFile"

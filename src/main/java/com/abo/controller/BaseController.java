@@ -8,10 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class BaseController {
 	@Autowired
 	HttpSession session;
-	
-	//发送消息
-	public void sendMessage(String mes){
+
+	// 发送消息
+	public void sendMessage(String mes) {
 		session.setAttribute("message", mes);
 	}
-
 }
