@@ -37,4 +37,25 @@ public interface UserDao {
 	 */
 	int insertMyFile(MyFile myfile);
 	
+	/**
+	 * 通过id获取user表中一行
+	 * @param id
+	 * @return
+	 */
+	User selectUserById(Long id);
+	
+	/**
+	 * 通过phone获取user表中一行
+	 * @param phone
+	 * @return
+	 */
+	User selectUserByPhone(String phone);
+	
+	/**
+	 * 通过user_id获取mydiskinfo表中一行
+	 * @param userid
+	 * @return
+	 */
+	Disk selectDiskByUserid(Long user_id);
+	
 }

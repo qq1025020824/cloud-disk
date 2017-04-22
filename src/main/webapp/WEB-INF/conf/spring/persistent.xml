@@ -57,5 +57,9 @@
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
+	
+	 <!-- 事务的配置类 -->
+    <bean class ="com.abo.config.MainConfig"/>
+	
 	<tx:annotation-driven transaction-manager="transactionManager" />
 </beans>

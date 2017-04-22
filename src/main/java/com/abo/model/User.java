@@ -36,5 +36,10 @@ public class User {
 	public void setJoindate(String joindate) {
 		this.joindate = joindate;
 	}
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", phone=" + phone + ", username=" + username + ", password=" + password
+				+ ", joindate=" + joindate + "]";
+	}
 	
 }

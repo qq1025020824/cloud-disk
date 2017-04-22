@@ -10,5 +10,5 @@ import org.springframework.web.servlet.view.JstlView;
 @Configuration
 @EnableTransactionManagement
 public class MainConfig {
-//    JstlView
+	
 }
