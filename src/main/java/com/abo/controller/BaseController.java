@@ -6,7 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.abo.vo.UserInfoVO;
 
-//控制器基类，用于操作session
+/**
+ * 控制器基类，用于操作session
+ * @author abo
+ *
+ */
 public class BaseController {
 	@Autowired
 	HttpSession session;
@@ -23,5 +27,18 @@ public class BaseController {
 	public void sendUserInfo(UserInfoVO uif){
 		session.setAttribute("userinfo", uif);
 		System.out.println(session.getAttribute("userinfo"));
+	}
+	
+	/**
+	 * 获取session中保存的user id
+	 * @return 有则返回id，否则返回null
+	 */
+	public Long getUserID(){
+		Long id=null;
+		UserInfoVO uif=(UserInfoVO) session.getAttribute("userinfo");
+		if(uif!=null){
+			id=uif.getId();
+		}
+		return id;
 	}
 }

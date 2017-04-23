@@ -18,5 +18,5 @@
 
     <mvc:resources mapping="/static/**" location="/WEB-INF/static/" />
 
-    <import resource="view-resolver.xml"/>
+    <import resource="classpath:conf/spring/view-resolver.xml"/>
 </beans>

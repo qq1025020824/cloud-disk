@@ -22,5 +22,5 @@
         </property>
     </bean>
     
-    <import resource="persistent.xml"/>
+    <import resource="classpath:conf/spring/persistent.xml"/>
 </beans>

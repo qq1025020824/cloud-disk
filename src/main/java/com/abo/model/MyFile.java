@@ -65,5 +65,11 @@ public class MyFile {
 	public void setLocation(String location) {
 		this.location = location;
 	}
+	@Override
+	public String toString() {
+		return "MyFile [id=" + id + ", user_id=" + user_id + ", parent_id=" + parent_id + ", name=" + name + ", size="
+				+ size + ", type=" + type + ", path=" + path + ", createdate=" + createdate + ", location=" + location
+				+ "]";
+	}
 	
 }

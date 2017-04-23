@@ -48,11 +48,13 @@ public class UserController extends BaseController{
 		}
 	}
 
+	//登录页
 	@RequestMapping(value = "/login")
 	public String showLoginPage(){
 		return "user/login";
 	}
 	
+	//登录
 	@RequestMapping(value = "/doLogin")
 	public String doLogin(@RequestParam String phone,@RequestParam String password){
 		//验证是否注册
@@ -75,7 +77,7 @@ public class UserController extends BaseController{
 				System.out.println(uif.getUsername());
 			}
 			//跳转到网盘展示页
-			return "redirect:/file/view";
+			return "redirect:/file/view?folder=home";
 		}else{
 			sendMessage("密码错误，请重新登录。");
 			return "redirect:/login";

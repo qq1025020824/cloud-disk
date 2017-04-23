@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,9 +14,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.abo.service.FileService;
+
 @Controller
 @RequestMapping(value = "/file")
-public class FileController {
+public class FileController extends BaseController{
+	private static final Logger Log = LoggerFactory.getLogger(FileController.class);
+	@Autowired
+    private FileService fileService;
 	
 	//文件上传页
 	@RequestMapping(value = "/upload")
