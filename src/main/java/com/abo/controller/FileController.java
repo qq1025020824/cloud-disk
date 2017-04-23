@@ -58,21 +58,22 @@ public class FileController extends BaseController{
 			this.sendMessage("尚未登录，请先登录。");
 			return "redirect:/login";
 		}
-		//转换fileid
-		Long fileid;
+		//判断folder
 		if(folder.equals("home")){
-			MyFile file=fileService.getUserRoot(userid);
-			fileid = file.getId();
+			if(fileService.showUserRoot(userid, model)){
+				return "file/view";
+			}else{
+				this.sendMessage("系统错误，请稍后再试。");
+				return "redirect:/login";
+			}
 		}else{
-			fileid=new Long(folder);
+			if(fileService.showFolder(new Long(folder), userid, model)){
+				return "file/view";
+			}else{
+				//错误，跳转用户根目录
+				return "redirect:/file/view?folder=home";
+			}
 		}
-		//判断用户是否有访问权限
-		if(!fileService.checkUserFile(userid, fileid)){
-			//无权访问，跳转
-			return "redirect:/file/view?folder=home";
-		}
-		//获取路径列
-		return "";
 	}
 
 	//test

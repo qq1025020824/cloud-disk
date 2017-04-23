@@ -3,8 +3,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.abo.dao.FileDao">
-<select id="selectMyfileByName" parameterType="java.lang.String"
-		resultType="com.abo.model.MyFile" >
-		select id,user_id,parent_id,name,size,type,path,createdate,location from myfile where name= #{name}
+	<select id="selectMyfileByName" parameterType="java.lang.String"
+		resultType="com.abo.model.MyFile">
+		select
+		id,user_id,parent_id,name,size,type,path,createdate,location from
+		myfile where name= #{name}
 	</select>
+	
+	<select id="selectMyfileById" parameterType="Long"
+		resultType="com.abo.model.MyFile">
+		select
+		id,user_id,parent_id,name,size,type,path,createdate,location from
+		myfile where id= #{id}
+	</select>
+	
+	<select id="selectMyfileByParent" parameterType="Long"
+		resultType="com.abo.model.MyFile">
+		select
+		id,user_id,parent_id,name,size,type,path,createdate,location from
+		myfile where parent_id= #{parent_id}
+	</select>
+	
 </mapper>
