@@ -1,0 +1,21 @@
+
+/*按钮*/
+button{
+	padding: 0.5em;
+	min-width: 5em;
+	border-radius:4px;
+	border:1px solid #199EF8;
+	background-color: #199EF8;
+	font-size: 1em;
+	color: #FFFFFF;
+}
+button:focus{
+    outline: 0;
+}
+button:hover{
+	background-color: #4BB3F9;
+}
+	button:active,button.onpress{
+    background-color: #0997F7;
+    color: #076FB5;
+}
