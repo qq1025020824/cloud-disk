@@ -1,13 +1,68 @@
+/*地址栏*/
+.breadcrumb {
+    position: fixed;
+    top: 7em;
+    width: 100%;
+    max-width: 1200px;
+    border: 1.5px solid #4BB3F9;
+	border-radius: 2px;
+}
+body{
+	margin-top: 10em;
+	margin-bottom: 5em;
+}
+
+/*按钮栏*/
+.buttonbar{
+	position: fixed;
+	bottom: 0px;
+    width: 100%;
+    max-width: 1200px;
+    background-color: #EEEEEE;
+    padding: 0.5em;
+}
+
+/*表格*/
+.table th,.table td{
+	text-align: center;
+	font-size: 0.9em;
+}
+.table a{
+	color: #000000;
+}
+
+/*图标*/
+.glyphicon{
+	padding-right: 0.5em;
+}
+.glyphicon-folder-open{
+	color: #F76809;
+}
+.glyphicon-file{
+	color: #2292DD;
+}
+
+/*隐藏表单*/
+.hiddenfrom{
+	position: fixed;
+	left: 6em;
+	bottom: 4em;
+	background: #FFFFFF;
+	border: 2px solid #B3B3B3;
+	padding: 1em;
+}
 
 /*按钮*/
 button{
 	padding: 0.5em;
+	margin-left: 1em;
 	min-width: 5em;
 	border-radius:4px;
 	border:1px solid #199EF8;
 	background-color: #199EF8;
 	font-size: 1em;
 	color: #FFFFFF;
+	font-family:"Microsoft YaHei",微软雅黑,"MicrosoftJhengHei",华文细黑,STHeiti,MingLiu;
 }
 button:focus{
     outline: 0;
@@ -15,7 +70,7 @@ button:focus{
 button:hover{
 	background-color: #4BB3F9;
 }
-	button:active,button.onpress{
+button:active,button.onpress{
     background-color: #0997F7;
     color: #076FB5;
 }

@@ -4,19 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.abo.dao.FileDao;
 import com.abo.model.MyFile;
 import com.abo.vo.MyFileVO;
 
-
+@Service
 public class FileService {
-	@Resource(name = "fileDao")
+	@Autowired
 	private FileDao fileDao;
 	private static final Logger Log = LoggerFactory.getLogger(FileService.class);
 	

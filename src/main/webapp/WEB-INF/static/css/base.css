@@ -1,23 +1,78 @@
-/**
-*@author huangbbin
- */
-*{
-    margin: 0;
-    padding: 0;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+/*一般*/
+body{
+	color: #101010;
+	font-size: 16px;
+	font-family:"Microsoft YaHei",微软雅黑,"MicrosoftJhengHei",华文细黑,STHeiti,MingLiu;
+	max-width: 1200px;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 8em;
 }
-html{
 
-    font-family: sans-serif;
-    /*解决iPhone和安卓浏览器横屏改变字体大小的问题*/
-    -webkit-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%;
-}
-ul{
-    list-style: none;
-}
+/*<a>*/
 a{
-    text-decoration: none;
+	cursor:pointer;
+}
+a:link{
+	text-decoration:none;
+}
+a:visited{
+	text-decoration:none;
+}
+a:active{
+	text-decoration:underline;
+}
+a:hover{
+	text-decoration:underline;
+}
+
+/*头*/
+.navbar{
+	max-width: 1200px;
+	margin-left: auto;
+	margin-right: auto;
+	height: 7em;
+	background: #199EF8;
+	border: 2px solid #199EF8;
+	border-radius: 2px;
+}
+.container{
+	margin-top: 1em;
+}
+.navbar-header{
+	font-size: 2em;
+	font-weight: bold;
+	color: #FFFFFF;
+	vertical-align: middle;
+}
+.glyphicon.glyphicon-floppy-disk{
+	margin-top: 0.1em;
+	font-size: 2em;
+	padding-right: 0em;
+}
+.navbar-body{
+	width: 50%;
+	text-align: right;
+	margin-top: 0.5em;
+}
+a.dropdown-toggle{
+	color: #FFFFFF;
+}
+.progress-bar{
+	background-color: #3F516C;
+}
+.dropdown-menu{
+	padding: 0;
+	text-align: right;
+}
+.list-group-item{
+	color: #555;
+}
+
+/*消息框*/
+.alert{
+	float:left; 
+	position:relative; 
+	left:1em; 
+	top: 2em;
 }
