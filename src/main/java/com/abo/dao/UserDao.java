@@ -22,22 +22,6 @@ public interface UserDao {
 	int insertUser(User user);
 	
 	/**
-	 * 往mydiskinfo表中插入一行
-	 * @param disk
-	 * @return 成功插入行数 1/0
-	 * id自动产生并填入
-	 */
-	int insertDisk(Disk disk);
-	
-	/**
-	 * 往文件表中插入一行
-	 * @param myfile
-	 * @return 成功插入行数 1/0
-	 * id自动产生并填入
-	 */
-	int insertMyFile(MyFile myfile);
-	
-	/**
 	 * 通过id获取user表中一行
 	 * @param id
 	 * @return
@@ -50,12 +34,5 @@ public interface UserDao {
 	 * @return
 	 */
 	User selectUserByPhone(String phone);
-	
-	/**
-	 * 通过user_id获取mydiskinfo表中一行
-	 * @param userid
-	 * @return
-	 */
-	Disk selectDiskByUserid(Long user_id);
 	
 }

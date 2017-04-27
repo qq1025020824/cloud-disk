@@ -1,6 +1,8 @@
 package com.abo.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
@@ -8,9 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import com.abo.dao.FileDao;
+import com.abo.dao.UserDao;
+import com.abo.model.Disk;
 import com.abo.model.MyFile;
 import com.abo.vo.MyFileVO;
 
@@ -61,13 +66,12 @@ public class FileService {
 		for(MyFile file:templist){
 			MyFileVO myvc =new MyFileVO();
 			myvc.setId(file.getId().toString());
+			myvc.setName(file.getName());
 			if(file.getType().equals("folder")){
 				//如果是文件夹
-				myvc.setName(file.getName());
 				myvc.setSize("-");
 			}else{
 				//如果是文件
-				myvc.setName(file.getName()+"."+file.getType());
 				//自动给size加单位
 				long size=file.getSize();
 				int i;
@@ -164,13 +168,12 @@ public class FileService {
 		for(MyFile file:templist){
 			MyFileVO myvc =new MyFileVO();
 			myvc.setId(file.getId().toString());
+			myvc.setName(file.getName());
 			if(file.getType().equals("folder")){
 				//如果是文件夹
-				myvc.setName(file.getName());
 				myvc.setSize("-");
 			}else{
 				//如果是文件
-				myvc.setName(file.getName()+"."+file.getType());
 				//自动给size加单位
 				long size=file.getSize();
 				int i;
@@ -208,4 +211,34 @@ public class FileService {
 		return true;
 	}
 
+	/**
+	 * 获取网盘剩余空间
+	 * @param userid
+	 * @return
+	 */
+	public long getFreeSize(Long userid){
+		Disk disk=fileDao.selectDiskByUserid(userid);
+		return disk.getTotalsize()-disk.getUsedsize();
+	}
+	
+	/**
+	 * 向网盘添加文件
+	 * @param file 须包含:user_id,parent_id,name,type,size,location
+	 * @return 插入成功返回true,否则false
+	 * 自动填充file中的信息
+	 */
+	@Transactional
+	public boolean addFile(MyFile file){
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+		file.setCreatedate(sdf.format(new Date()));
+		file.setPath(fileDao.getPath(file.getParent_id())+file.getParent_id()+"/");
+		if(fileDao.insertMyFile(file)==0){
+			return false;
+		}
+		//更新网盘信息
+		Disk disk=fileDao.selectDiskByUserid(file.getUser_id());
+		disk.setUsedsize(disk.getUsedsize()+file.getSize());
+		fileDao.updateDisk(disk);
+		return true;
+	}
 }

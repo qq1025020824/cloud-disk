@@ -24,4 +24,48 @@
 		myfile where parent_id= #{parent_id}
 	</select>
 	
+	<select id="selectDiskByUserid" parameterType="Long"
+		resultType="com.abo.model.Disk">
+		select id,user_id,totalsize,usedsize from mydiskinfo where
+		user_id= #{user_id}
+	</select>
+	
+	<insert id="insertDisk" parameterType="com.abo.model.Disk"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		mydiskinfo(user_id,totalsize,usedsize)
+		values(#{user_id},#{totalsize},#{usedsize})
+	</insert>
+	
+	<insert id="insertMyFile" parameterType="com.abo.model.MyFile"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into myfile(user_id,
+		<if test="parent_id!=null">parent_id,</if>
+		name,size,type,path
+		<if test="createdate!=null">,createdate</if>
+		<if test="location!=null">,location</if>
+		)
+		values(#{user_id},
+		<if test="parent_id!=null">#{parent_id},</if>
+		#{name},#{size},#{type},#{path}
+		<if test="createdate!=null">,#{createdate}</if>
+		<if test="location!=null">,#{location}</if>
+		)
+	</insert>
+	
+	<update id="updateDisk" parameterType="com.abo.model.Disk">
+        update mydiskinfo
+        <set>
+            <if test="user_id != null">user_id=#{user_id},</if>
+            <if test="totalsize != null">totalsize=#{totalsize},</if>
+            <if test="usedsize != null">usedsize=#{usedsize}</if>
+        </set>
+        where id=#{id}
+	</update>
+	
+	<select id="getPath" parameterType="Long"
+		resultType="String">
+		select path from myfile where id= #{id}
+	</select>
+	
 </mapper>

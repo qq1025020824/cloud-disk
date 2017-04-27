@@ -2,6 +2,7 @@ package com.abo.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
@@ -19,7 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.abo.model.MyFile;
 import com.abo.service.FileService;
+import com.abo.service.UserService;
 import com.abo.vo.MyFileVO;
+import com.abo.vo.UserInfoVO;
 
 @Controller
 @RequestMapping(value = "/file")
@@ -27,25 +30,63 @@ public class FileController extends BaseController{
 	private static final Logger Log = LoggerFactory.getLogger(FileController.class);
 	@Autowired
     private FileService fileService;
-	
-	//文件上传页
-	@RequestMapping(value = "/upload")
-	public String showUploadPage(){
-		//跳转到文件上传页
-		return "file/file_upload";
-	}
+	@Autowired
+    private UserService userService;
+	String FILE_BASE_PATH ="E:\\Programing\\temp\\clouddisk\\";
 	
 	//上传文件
+	@SuppressWarnings("finally")
 	@RequestMapping(value = "/doupload",method = RequestMethod.POST)
-	public String doUpload(@RequestParam MultipartFile uploadfile) throws IOException{
-		System.out.println("into doupload");
-		if(!uploadfile.isEmpty()){
-			System.out.println("start load");
-			FileUtils.copyInputStreamToFile(uploadfile.getInputStream(), 
-					new File("E:\\Programing\\temp\\file\\"+"abo\\",System.currentTimeMillis()+uploadfile.getOriginalFilename()));
-			System.out.println("end load");
+	public String doUpload(@RequestParam Long folder,@RequestParam MultipartFile uploadfile){
+		if(uploadfile.isEmpty()){
+			this.sendMessage("文件为空，请重新选择。");
+			return "redirect:/file/view?folder="+folder.toString();
 		}
-		return "redirect:/file/upload";
+		String fileName=uploadfile.getOriginalFilename();
+		String suffix=fileName.substring(fileName.lastIndexOf(".")+1);
+		long size=uploadfile.getSize();
+		
+		//判断剩余空间
+		if(size>fileService.getFreeSize(this.getUserID())){
+			this.sendMessage("剩余空间不足。");
+			return "redirect:/file/view?folder="+folder.toString();
+		}
+		
+		String localName=new Date().getTime()+"."+suffix;
+		File localfile=new File(FILE_BASE_PATH,localName);
+		//开始上传
+		try{
+			FileUtils.copyInputStreamToFile(uploadfile.getInputStream(),localfile);
+			
+			//操作数据库
+			MyFile file=new MyFile();
+			file.setUser_id(getUserID());
+			file.setParent_id(folder);
+			file.setName(fileName);
+			file.setType(suffix.toLowerCase());
+			file.setSize(size);
+			file.setLocation(FILE_BASE_PATH+localName);
+			if(!fileService.addFile(file)){
+				//数据库错误，删除文件
+				localfile.delete();
+				this.sendMessage("系统错误，请稍后再试。");
+				return "redirect:/file/view?folder="+folder.toString();
+			}
+			
+			//更新用户信息
+			UserInfoVO uif=userService.updateUserInfo(this.getUserID());
+			if(uif!=null){
+				sendUserInfo(uif);
+			}
+		}catch(IOException e){
+			Log.debug("上传文件错误");
+			if(localfile.exists()){
+				localfile.delete();
+			}
+			this.sendMessage("系统错误，请稍后再试。");
+		}finally{
+			return "redirect:/file/view?folder="+folder.toString();
+		}
 	}
 	
 	/**

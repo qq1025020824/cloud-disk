@@ -16,29 +16,6 @@
 		values(#{phone},#{username},#{password},#{joindate})
 	</insert>
 
-	<insert id="insertDisk" parameterType="com.abo.model.Disk"
-		useGeneratedKeys="true" keyProperty="id">
-		insert into
-		mydiskinfo(user_id,totalsize,usedsize)
-		values(#{user_id},#{totalsize},#{usedsize})
-	</insert>
-
-	<insert id="insertMyFile" parameterType="com.abo.model.MyFile"
-		useGeneratedKeys="true" keyProperty="id">
-		insert into myfile(user_id,
-		<if test="parent_id!=null">parent_id,</if>
-		name,size,type,path
-		<if test="createdate!=null">,createdate</if>
-		<if test="location!=null">,location</if>
-		)
-		values(#{user_id},
-		<if test="parent_id!=null">#{parent_id},</if>
-		#{name},#{size},#{type},#{path}
-		<if test="createdate!=null">,#{createdate}</if>
-		<if test="location!=null">,#{location}</if>
-		)
-	</insert>
-
 	<select id="selectUserById" parameterType="java.lang.Long" resultType="com.abo.model.User">
 		select id,phone,username,password,joindate from user where id= #{id}
 	</select>
@@ -47,12 +24,6 @@
 		resultType="com.abo.model.User">
 		select id,phone,username,password,joindate from user where
 		phone= #{phone}
-	</select>
-
-	<select id="selectDiskByUserid" parameterType="Long"
-		resultType="com.abo.model.Disk">
-		select id,user_id,totalsize,usedsize from mydiskinfo where
-		user_id= #{user_id}
 	</select>
 
 </mapper>

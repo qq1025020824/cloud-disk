@@ -2,6 +2,7 @@ package com.abo.dao;
 
 import java.util.List;
 
+import com.abo.model.Disk;
 import com.abo.model.MyFile;
 
 public interface FileDao {
@@ -26,4 +27,42 @@ public interface FileDao {
 	 * @return
 	 */
 	List<MyFile> selectMyfileByParent(Long parent_id);
+	
+	/**
+	 * 通过user_id获取mydiskinfo表中一行
+	 * @param userid
+	 * @return
+	 */
+	Disk selectDiskByUserid(Long user_id);
+	
+	/**
+	 * 往mydiskinfo表中插入一行
+	 * @param disk
+	 * @return 成功插入行数 1/0
+	 * id自动产生并填入
+	 */
+	int insertDisk(Disk disk);
+	
+	/**
+	 * 往文件表中插入一行
+	 * @param myfile
+	 * @return 成功插入行数 1/0
+	 * id自动产生并填入
+	 */
+	int insertMyFile(MyFile myfile);
+
+	/**
+	 * 更新mydiskinfo表中的一行
+	 * @param disk
+	 */
+	void updateDisk(Disk disk);
+	
+	//未写
+	/**
+	 * 通过id获取文件path
+	 * @param id
+	 * @return
+	 */
+	String getPath(Long id);
+	
 }

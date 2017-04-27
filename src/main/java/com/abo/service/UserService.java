@@ -7,9 +7,11 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.abo.dao.FileDao;
 import com.abo.dao.UserDao;
 import com.abo.model.Disk;
 import com.abo.model.MyFile;
@@ -20,6 +22,8 @@ import com.abo.vo.UserInfoVO;
 public class UserService {
 	@Resource(name = "userDao")
 	private UserDao userDao;
+	@Autowired
+	private FileDao fileDao;
 	private static final long DEFAULT_TOTAL_SIZE = 1024 * 1024 * 5; // 默认空间5M
 	private static final Logger Log = LoggerFactory.getLogger(UserService.class);
 	/**
@@ -58,7 +62,7 @@ public class UserService {
 		disk.setUser_id(user.getId());
 		disk.setTotalsize(DEFAULT_TOTAL_SIZE);
 		disk.setUsedsize(0);
-		if (userDao.insertDisk(disk) == 0) {
+		if (fileDao.insertDisk(disk) == 0) {
 			/* 错误处理 */
 			return false;
 		}
@@ -71,7 +75,7 @@ public class UserService {
 		myfile.setSize(0);
 		myfile.setType("folder");
 		myfile.setPath("/");
-		if (userDao.insertMyFile(myfile) == 0) {
+		if (fileDao.insertMyFile(myfile) == 0) {
 			/* 错误处理 */
 			return false;
 		}
@@ -114,7 +118,7 @@ public class UserService {
 	public UserInfoVO updateUserInfo(Long userid) {
 		User user = userDao.selectUserById(userid);
 		Log.debug("user is:{}",user);
-		Disk disk = userDao.selectDiskByUserid(userid);
+		Disk disk = fileDao.selectDiskByUserid(userid);
 		if (user != null && disk != null) {
 			UserInfoVO uif = new UserInfoVO();
 			uif.setId(user.getId());
