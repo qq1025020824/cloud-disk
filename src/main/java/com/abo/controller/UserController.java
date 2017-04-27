@@ -83,4 +83,11 @@ public class UserController extends BaseController{
 			return "redirect:/login";
 		}
 	}
+	
+	//登录
+	@RequestMapping(value = "/logout")
+	public String doLogout(){
+		this.session.removeAttribute("userinfo");
+		return "redirect:/login";
+	}
 }

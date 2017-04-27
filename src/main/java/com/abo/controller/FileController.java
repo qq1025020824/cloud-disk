@@ -2,6 +2,8 @@ package com.abo.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Stack;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -17,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.abo.model.MyFile;
 import com.abo.service.FileService;
+import com.abo.vo.MyFileVO;
 
 @Controller
 @RequestMapping(value = "/file")
@@ -47,8 +50,10 @@ public class FileController extends BaseController{
 	
 	/**
 	 * @param folder 文件夹id,用户根目录为home
-	 * @param model
-	 * @return
+	 * @param model 
+	 * Stack<MyFileVO> paths 至少有一个内容
+	 * List<MyFileVO> contents 可能为空
+	 * @return 
 	 */
 	@RequestMapping(value = "/view")
 	public String showFolder(@RequestParam String folder,Model model){

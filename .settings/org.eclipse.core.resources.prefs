@@ -1,2 +1,10 @@
 eclipse.preferences.version=1
+encoding//src/main/webapp/WEB-INF/static/css/base.css=UTF-8
+encoding//src/main/webapp/WEB-INF/static/css/bootstrap.min.css=UTF-8
+encoding//src/main/webapp/WEB-INF/static/css/form.css=UTF-8
+encoding//src/main/webapp/WEB-INF/static/css/view.css=UTF-8
+encoding//src/main/webapp/WEB-INF/static/fonts/glyphicons-halflings-regular.eot=UTF-8
+encoding//src/main/webapp/WEB-INF/static/fonts/glyphicons-halflings-regular.woff2=UTF-8
+encoding//src/main/webapp/WEB-INF/static/js/bootstrap.min.js=UTF-8
+encoding//src/main/webapp/WEB-INF/static/js/jquery.min.js=UTF-8
 encoding/<project>=UTF-8
