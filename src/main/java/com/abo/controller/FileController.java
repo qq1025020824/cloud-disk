@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +34,7 @@ public class FileController extends BaseController{
     private FileService fileService;
 	@Autowired
     private UserService userService;
-	String FILE_BASE_PATH ="E:\\Programing\\temp\\clouddisk\\";
+	String FILE_BASE_PATH ="E:/Programing/temp/clouddisk/";
 	
 	//上传文件
 	@SuppressWarnings("finally")
@@ -143,6 +145,25 @@ public class FileController extends BaseController{
 		file.setName(name);
 		if(!fileService.addFolder(file)){
 			this.sendMessage("系统错误，请稍后再试。");
+		}
+		return "redirect:/file/view?folder="+folder.toString();
+	}
+	
+	/**
+	 * 删除多个文件/文件夹
+	 * @return
+	 */
+	@RequestMapping(value = "/delect",method = RequestMethod.POST)
+	public String doDelect(HttpServletRequest request,@RequestParam Long folder){
+		String[] idlist=request.getParameterValues("id");
+		if(!fileService.delectFile(idlist)){
+			this.sendMessage("系统错误，请稍候再试。");
+		}else{
+			//更新用户信息
+			UserInfoVO uif=userService.updateUserInfo(this.getUserID());
+			if(uif!=null){
+				sendUserInfo(uif);
+			}
 		}
 		return "redirect:/file/view?folder="+folder.toString();
 	}

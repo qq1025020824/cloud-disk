@@ -68,4 +68,8 @@
 		select path from myfile where id= #{id}
 	</select>
 	
+	<delete id="delectMyFileByID" parameterType="Long">  
+        DELETE FROM myfile WHERE id = #{id}
+	</delete>  
+	
 </mapper>

@@ -64,4 +64,11 @@ public interface FileDao {
 	 */
 	String getPath(Long id);
 	
+	/**
+	 * 通过id删除文件
+	 * @param id
+	 * @return
+	 */
+	void delectMyFileByID(Long id);
+	
 }
