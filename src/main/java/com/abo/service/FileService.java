@@ -120,19 +120,20 @@ public class FileService {
 	 */
 	public boolean showFolder(Long folderid,Long userid,Model model){
 		//获取目录
-		MyFile folder=fileDao.selectMyfileById(folderid);
-		if(folder==null){
+		MyFile curfolder=fileDao.selectMyfileById(folderid);
+		if(curfolder==null){
 			//id错误
 			return false;
 		}
-		if(!folder.getType().equals("folder")){
+		if(!curfolder.getType().equals("folder")){
 			//非文件夹
 			return false;
 		}
-		if(!folder.getUser_id().equals(userid)){
+		if(!curfolder.getUser_id().equals(userid)){
 			//用户无权限
 			return false;
 		}
+		MyFile folder=curfolder;
 		//路径列
 		Stack<MyFileVO> paths=new Stack<MyFileVO>();
 		while(true){
@@ -158,6 +159,7 @@ public class FileService {
 		}
 		model.addAttribute("paths", paths);
 		
+		folder=curfolder;
 		//内容列
 		List<MyFileVO> contents=new ArrayList<MyFileVO>();
 		List<MyFile> templist=fileDao.selectMyfileByParent(folder.getId());
@@ -240,5 +242,23 @@ public class FileService {
 		disk.setUsedsize(disk.getUsedsize()+file.getSize());
 		fileDao.updateDisk(disk);
 		return true;
+	}
+	
+	/**
+	 * 向网盘添加文件夹
+	 * @param file 须包含:user_id,parent_id,name
+	 * @return
+	 */
+	public boolean addFolder(MyFile file){
+		file.setPath(fileDao.getPath(file.getParent_id())+file.getParent_id()+"/");
+		file.setSize(0);
+		file.setType("folder");
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+		file.setCreatedate(sdf.format(new Date()));
+		if(fileDao.insertMyFile(file)>0){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }

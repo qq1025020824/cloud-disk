@@ -53,7 +53,7 @@ body{
 }
 
 /*按钮*/
-button{
+.buttonbar button{
 	padding: 0.5em;
 	margin-left: 1em;
 	min-width: 5em;
@@ -64,13 +64,13 @@ button{
 	color: #FFFFFF;
 	font-family:"Microsoft YaHei",微软雅黑,"MicrosoftJhengHei",华文细黑,STHeiti,MingLiu;
 }
-button:focus{
+.buttonbar button:focus{
     outline: 0;
 }
-button:hover{
+.buttonbar button:hover{
 	background-color: #4BB3F9;
 }
-button:active,button.onpress{
+.buttonbar button:active,.buttonbar button.onpress{
     background-color: #0997F7;
     color: #076FB5;
 }

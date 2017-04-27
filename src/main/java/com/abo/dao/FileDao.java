@@ -57,7 +57,6 @@ public interface FileDao {
 	 */
 	void updateDisk(Disk disk);
 	
-	//未写
 	/**
 	 * 通过id获取文件path
 	 * @param id

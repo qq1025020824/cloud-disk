@@ -121,16 +121,29 @@ public class FileController extends BaseController{
 			}
 		}
 	}
-
-	//test
-	@RequestMapping(value = "/test1")
-	public String test1(){
-		System.out.println("into mapping /test1");
-		return "file/success";
-	}
-	@RequestMapping(value = "/{test}")
-	public String test2(@PathVariable String test){
-		System.out.println("into mapping /{test}:"+test);
-		return "file/success";
+	
+	/**
+	 * 新建文件夹
+	 * @return
+	 */
+	@RequestMapping(value = "/mkdir",method = RequestMethod.POST)
+	public String doMkdir(@RequestParam Long folder,@RequestParam String name){
+		if(name==null){
+			this.sendMessage("文件名不能为空。");
+			return "redirect:/file/view?folder="+folder.toString();
+		}
+		name=name.trim();
+		if(name.equals("")){
+			this.sendMessage("文件名不能为空。");
+			return "redirect:/file/view?folder="+folder.toString();
+		}
+		MyFile file=new MyFile();
+		file.setUser_id(getUserID());
+		file.setParent_id(folder);
+		file.setName(name);
+		if(!fileService.addFolder(file)){
+			this.sendMessage("系统错误，请稍后再试。");
+		}
+		return "redirect:/file/view?folder="+folder.toString();
 	}
 }
