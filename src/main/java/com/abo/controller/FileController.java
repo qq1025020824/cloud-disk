@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Stack;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -166,5 +167,16 @@ public class FileController extends BaseController{
 			}
 		}
 		return "redirect:/file/view?folder="+folder.toString();
+	}
+	
+	@RequestMapping(value = "/download",method = RequestMethod.POST)
+	public void doDownload(HttpServletRequest request,HttpServletResponse response,@RequestParam Long folder) throws IOException{
+		String[] idlist=request.getParameterValues("id");
+		if(idlist.length==1){
+			fileService.downloadFile(idlist[0], response);
+		}
+		if(idlist.length>1){
+			
+		}
 	}
 }

@@ -1,11 +1,18 @@
 package com.abo.service;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Stack;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +26,7 @@ import com.abo.dao.UserDao;
 import com.abo.model.Disk;
 import com.abo.model.MyFile;
 import com.abo.vo.MyFileVO;
+
 
 @Service
 public class FileService {
@@ -310,6 +318,70 @@ public class FileService {
 			}
 		} catch (Exception e) {
 			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * 下载单个文件
+	 * @param id
+	 * @return
+	 */
+	public boolean downloadFile(String id,HttpServletResponse response){
+		MyFile myFile=null;
+		if(id.equals("zip")){
+			//下载打包的文件
+//			myFile=fileDao.selectMyfileById(new Long(id));
+		}else{
+			//下载单个文件
+			myFile=fileDao.selectMyfileById(new Long(id));
+			if(myFile.getType().equals("folder")){
+				//跳转到下载多个文件
+			}
+		}
+		if(myFile==null){
+			return false;
+		}
+		
+		//开始下载
+		String fileName = "unknown";
+		try {
+			fileName = URLEncoder.encode(myFile.getName(), "UTF-8").replace("+", "%20");
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+		
+		response.reset();
+        response.setContentType("APPLICATION/OCTET-STREAM");
+        response.setHeader("Content-Length", myFile.getSize()+"");
+        response.setHeader("Content-Disposition", "attachment;filename=\"" + 
+        					myFile.getName() + "\";filename*=utf-8''"+fileName);
+        
+        PrintWriter out = null;
+        FileInputStream in = null;
+		try {
+			in = new FileInputStream(myFile.getLocation());
+			out = response.getWriter();
+			int b;
+			while ((b = in.read()) != -1) {
+				out.write(b);
+			}
+			out.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}finally{
+			if(out!=null){
+				out.close();
+			}
+			if(in!=null){
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return true;
 	}
