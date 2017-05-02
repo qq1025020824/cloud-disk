@@ -33,6 +33,12 @@ public class FileController extends BaseController{
     private UserService userService;
 	public static String FILE_BASE_PATH ="E:/Programing/temp/clouddisk/";
 	
+	//无效路径
+	@RequestMapping(value = "/{test}")
+	public String redirect(){
+		return "redirect:/file/view?folder=home";
+	}
+	
 	//上传文件
 	@SuppressWarnings("finally")
 	@RequestMapping(value = "/doupload",method = RequestMethod.POST)
