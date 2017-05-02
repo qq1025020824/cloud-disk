@@ -44,6 +44,25 @@
 		</form>
 	</div>
 	<script src="<%=request.getContextPath()%>/static/js/jquery.min.js"></script>
+	<script src="<%=request.getContextPath()%>/static/js/jquery.validate.min.js"></script>
+	<script src="<%=request.getContextPath()%>/static/js/messages_zh.min.js"></script>
+	<script type="text/javascript">
+	$().ready(function() {
+	// 在键盘按下并释放及提交后验证提交表单
+	  $("#register-form").validate({
+		    rules: {
+		      phone: "required",
+		      password: "required",
+		      username: "required",
+		    },
+		    messages: {
+		      phone: "请输入手机",
+		      password: "请输入密码",
+		      username: "请输入用户名",
+		    }
+		});
+	});
+	</script>
 	<script src="<%=request.getContextPath()%>/static/js/bootstrap.min.js"></script>
 </body>
 </html>
