@@ -3,8 +3,6 @@ package com.abo.controller;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
-import java.util.Stack;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.abo.model.MyFile;
 import com.abo.service.FileService;
 import com.abo.service.UserService;
-import com.abo.vo.MyFileVO;
 import com.abo.vo.UserInfoVO;
 
 @Controller
@@ -35,7 +31,7 @@ public class FileController extends BaseController{
     private FileService fileService;
 	@Autowired
     private UserService userService;
-	String FILE_BASE_PATH ="E:/Programing/temp/clouddisk/";
+	public static String FILE_BASE_PATH ="E:/Programing/temp/clouddisk/";
 	
 	//上传文件
 	@SuppressWarnings("finally")
@@ -169,14 +165,27 @@ public class FileController extends BaseController{
 		return "redirect:/file/view?folder="+folder.toString();
 	}
 	
+	/**
+	 * 下载文件
+	 * @param request
+	 * @param response
+	 * @param folder
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping(value = "/download",method = RequestMethod.POST)
-	public void doDownload(HttpServletRequest request,HttpServletResponse response,@RequestParam Long folder) throws IOException{
+	public String doDownload(HttpServletRequest request,HttpServletResponse response,@RequestParam Long folder) throws IOException{
 		String[] idlist=request.getParameterValues("id");
 		if(idlist.length==1){
-			fileService.downloadFile(idlist[0], response);
+			if(!fileService.downloadFile(idlist[0], response)){
+				this.sendMessage("未选中任何文件。");
+			}
 		}
 		if(idlist.length>1){
-			
+			if(!fileService.downloadFiles(idlist, response)){
+				this.sendMessage("未选中任何文件。");
+			}
 		}
+		return "redirect:/file/view?folder="+folder.toString();
 	}
 }

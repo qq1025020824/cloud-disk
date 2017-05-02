@@ -2,6 +2,7 @@ package com.abo.service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -14,6 +15,8 @@ import java.util.Stack;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.tools.zip.ZipEntry;
+import org.apache.tools.zip.ZipOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
+import com.abo.controller.FileController;
 import com.abo.dao.FileDao;
-import com.abo.dao.UserDao;
 import com.abo.model.Disk;
 import com.abo.model.MyFile;
 import com.abo.vo.MyFileVO;
@@ -35,14 +38,14 @@ public class FileService {
 	private static final Logger Log = LoggerFactory.getLogger(FileService.class);
 
 	/**
-	 * å±•ç¤ºç”¨æˆ·æ ¹ç›®å½•
+	 * Õ¹Ê¾ÓÃ»§¸ùÄ¿Â¼
 	 * 
 	 * @param userid
 	 * @param model
-	 * @return æ­£ç¡®åˆ™å‘modelæ’å…¥ä¿¡æ¯paths,contentsï¼Œè¿”å›true é”™è¯¯åˆ™è¿”å›false
+	 * @return ÕıÈ·ÔòÏòmodel²åÈëĞÅÏ¢paths,contents£¬·µ»Øtrue ´íÎóÔò·µ»Øfalse
 	 */
 	public boolean showUserRoot(Long userid, Model model) {
-		// æ‰¾åˆ°ç”¨æˆ·æ ¹ç›®å½•
+		// ÕÒµ½ÓÃ»§¸ùÄ¿Â¼
 		List<MyFile> filelist = fileDao.selectMyfileByName("#" + userid.toString());
 		MyFile folder = null;
 		if (filelist == null)
@@ -55,7 +58,7 @@ public class FileService {
 		if (folder == null) {
 			return false;
 		}
-		// è·¯å¾„åˆ—
+		// Â·¾¶ÁĞ
 		Stack<MyFileVO> paths = new Stack<MyFileVO>();
 		MyFileVO myv = new MyFileVO();
 		myv.setId(folder.getId().toString());
@@ -65,7 +68,7 @@ public class FileService {
 		myv.setCreatedate(folder.getCreatedate());
 		paths.push(myv);
 		model.addAttribute("paths", paths);
-		// å†…å®¹åˆ—
+		// ÄÚÈİÁĞ
 		List<MyFileVO> contents = new ArrayList<MyFileVO>();
 		List<MyFile> templist = fileDao.selectMyfileByParent(folder.getId());
 		if (templist == null) {
@@ -77,11 +80,11 @@ public class FileService {
 			myvc.setId(file.getId().toString());
 			myvc.setName(file.getName());
 			if (file.getType().equals("folder")) {
-				// å¦‚æœæ˜¯æ–‡ä»¶å¤¹
+				// Èç¹ûÊÇÎÄ¼ş¼Ğ
 				myvc.setSize("-");
 			} else {
-				// å¦‚æœæ˜¯æ–‡ä»¶
-				// è‡ªåŠ¨ç»™sizeåŠ å•ä½
+				// Èç¹ûÊÇÎÄ¼ş
+				// ×Ô¶¯¸øsize¼Óµ¥Î»
 				long size = file.getSize();
 				int i;
 				for (i = 1; size > 1024 && i < 5; i++) {
@@ -119,35 +122,35 @@ public class FileService {
 	}
 
 	/**
-	 * å±•ç¤ºæ–‡ä»¶å¤¹ éœ€ä¼ å…¥useridç”¨äºéªŒè¯
+	 * Õ¹Ê¾ÎÄ¼ş¼Ğ Ğè´«ÈëuseridÓÃÓÚÑéÖ¤
 	 * 
 	 * @param folderid
 	 * @param model
-	 * @return æ­£ç¡®åˆ™å‘modelæ’å…¥ä¿¡æ¯ï¼Œè¿”å›true é”™è¯¯åˆ™è¿”å›false
+	 * @return ÕıÈ·ÔòÏòmodel²åÈëĞÅÏ¢£¬·µ»Øtrue ´íÎóÔò·µ»Øfalse
 	 */
 	public boolean showFolder(Long folderid, Long userid, Model model) {
-		// è·å–ç›®å½•
+		// »ñÈ¡Ä¿Â¼
 		MyFile curfolder = fileDao.selectMyfileById(folderid);
 		if (curfolder == null) {
-			// idé”™è¯¯
+			// id´íÎó
 			return false;
 		}
 		if (!curfolder.getType().equals("folder")) {
-			// éæ–‡ä»¶å¤¹
+			// ·ÇÎÄ¼ş¼Ğ
 			return false;
 		}
 		if (!curfolder.getUser_id().equals(userid)) {
-			// ç”¨æˆ·æ— æƒé™
+			// ÓÃ»§ÎŞÈ¨ÏŞ
 			return false;
 		}
 		MyFile folder = curfolder;
-		// è·¯å¾„åˆ—
+		// Â·¾¶ÁĞ
 		Stack<MyFileVO> paths = new Stack<MyFileVO>();
 		while (true) {
 			MyFileVO pfile = new MyFileVO();
 			pfile.setId(folder.getId().toString());
 			if (folder.getParent_id() == null) {
-				// ç”¨æˆ·æ ¹ç›®å½•
+				// ÓÃ»§¸ùÄ¿Â¼
 				pfile.setName("home");
 			} else {
 				pfile.setName(folder.getName());
@@ -157,17 +160,17 @@ public class FileService {
 			pfile.setCreatedate(folder.getCreatedate());
 			paths.push(pfile);
 			if (folder.getParent_id() == null) {
-				// æ‰¾åˆ°ç”¨æˆ·æ ¹ç›®å½•
+				// ÕÒµ½ÓÃ»§¸ùÄ¿Â¼
 				break;
 			} else {
-				// æ‰¾çˆ¶ç›®å½•
+				// ÕÒ¸¸Ä¿Â¼
 				folder = fileDao.selectMyfileById(folder.getParent_id());
 			}
 		}
 		model.addAttribute("paths", paths);
 
 		folder = curfolder;
-		// å†…å®¹åˆ—
+		// ÄÚÈİÁĞ
 		List<MyFileVO> contents = new ArrayList<MyFileVO>();
 		List<MyFile> templist = fileDao.selectMyfileByParent(folder.getId());
 		if (templist == null) {
@@ -179,11 +182,11 @@ public class FileService {
 			myvc.setId(file.getId().toString());
 			myvc.setName(file.getName());
 			if (file.getType().equals("folder")) {
-				// å¦‚æœæ˜¯æ–‡ä»¶å¤¹
+				// Èç¹ûÊÇÎÄ¼ş¼Ğ
 				myvc.setSize("-");
 			} else {
-				// å¦‚æœæ˜¯æ–‡ä»¶
-				// è‡ªåŠ¨ç»™sizeåŠ å•ä½
+				// Èç¹ûÊÇÎÄ¼ş
+				// ×Ô¶¯¸øsize¼Óµ¥Î»
 				long size = file.getSize();
 				int i;
 				for (i = 1; size > 1024 && i < 5; i++) {
@@ -221,7 +224,7 @@ public class FileService {
 	}
 
 	/**
-	 * è·å–ç½‘ç›˜å‰©ä½™ç©ºé—´
+	 * »ñÈ¡ÍøÅÌÊ£Óà¿Õ¼ä
 	 * 
 	 * @param userid
 	 * @return
@@ -232,11 +235,11 @@ public class FileService {
 	}
 
 	/**
-	 * å‘ç½‘ç›˜æ·»åŠ æ–‡ä»¶
+	 * ÏòÍøÅÌÌí¼ÓÎÄ¼ş
 	 * 
 	 * @param file
-	 *            é¡»åŒ…å«:user_id,parent_id,name,type,size,location
-	 * @return æ’å…¥æˆåŠŸè¿”å›true,å¦åˆ™false è‡ªåŠ¨å¡«å……fileä¸­çš„ä¿¡æ¯
+	 *            Ğë°üº¬:user_id,parent_id,name,type,size,location
+	 * @return ²åÈë³É¹¦·µ»Øtrue,·ñÔòfalse ×Ô¶¯Ìî³äfileÖĞµÄĞÅÏ¢
 	 */
 	@Transactional
 	public boolean addFile(MyFile file) {
@@ -246,7 +249,7 @@ public class FileService {
 		if (fileDao.insertMyFile(file) == 0) {
 			return false;
 		}
-		// æ›´æ–°ç½‘ç›˜ä¿¡æ¯
+		// ¸üĞÂÍøÅÌĞÅÏ¢
 		Disk disk = fileDao.selectDiskByUserid(file.getUser_id());
 		disk.setUsedsize(disk.getUsedsize() + file.getSize());
 		fileDao.updateDisk(disk);
@@ -254,10 +257,10 @@ public class FileService {
 	}
 
 	/**
-	 * å‘ç½‘ç›˜æ·»åŠ æ–‡ä»¶å¤¹
+	 * ÏòÍøÅÌÌí¼ÓÎÄ¼ş¼Ğ
 	 * 
 	 * @param file
-	 *            é¡»åŒ…å«:user_id,parent_id,name
+	 *            Ğë°üº¬:user_id,parent_id,name
 	 * @return
 	 */
 	@Transactional
@@ -275,7 +278,7 @@ public class FileService {
 	}
 
 	/**
-	 * åˆ é™¤æ–‡ä»¶
+	 * É¾³ıÎÄ¼ş
 	 * 
 	 * @param idlist
 	 * @return
@@ -283,34 +286,34 @@ public class FileService {
 	@Transactional
 	public boolean delectFile(String[] idlist) {
 		List<MyFile> filelist = new ArrayList<MyFile>();
-		// è·å–æ–‡ä»¶åˆ—
+		// »ñÈ¡ÎÄ¼şÁĞ
 		for (String id : idlist) {
 			MyFile file = fileDao.selectMyfileById(new Long(id));
 			if (file != null)
 				filelist.add(file);
 		}
-		// å¼€å§‹åˆ é™¤
+		// ¿ªÊ¼É¾³ı
 		try {
 			for (int i=0;i<filelist.size();i++) {
 				MyFile file=filelist.get(i);
 				if (file.getType().equals("folder")) {
-					// å¦‚æœä¸ºæ–‡ä»¶å¤¹
-					// æ‰¾åˆ°æ‰€æœ‰å­æ–‡ä»¶
+					// Èç¹ûÎªÎÄ¼ş¼Ğ
+					// ÕÒµ½ËùÓĞ×ÓÎÄ¼ş
 					List<MyFile> childlist = fileDao.selectMyfileByParent(file.getId());
 					for (MyFile child : childlist) {
 						filelist.add(child);
 					}
-					// åˆ é™¤æ–‡ä»¶å¤¹
+					// É¾³ıÎÄ¼ş¼Ğ
 					fileDao.delectMyFileByID(file.getId());
 				} else {
-					// å¦‚æœä¸ºæ–‡ä»¶
-					// åˆ é™¤ç£ç›˜æ–‡ä»¶
+					// Èç¹ûÎªÎÄ¼ş
+					// É¾³ı´ÅÅÌÎÄ¼ş
 					Log.debug("!!!file path:{}", file.getLocation());
 					new File(file.getLocation()).delete();
 					Log.debug("!!!after delete()");
-					// åˆ é™¤æ•°æ®åº“æ–‡ä»¶
+					// É¾³ıÊı¾İ¿âÎÄ¼ş
 					fileDao.delectMyFileByID(file.getId());
-					// æ›´æ–°ç½‘ç›˜ä¿¡æ¯
+					// ¸üĞÂÍøÅÌĞÅÏ¢
 					Disk disk = fileDao.selectDiskByUserid(file.getUser_id());
 					disk.setUsedsize(disk.getUsedsize() - file.getSize());
 					fileDao.updateDisk(disk);
@@ -323,33 +326,39 @@ public class FileService {
 	}
 	
 	/**
-	 * ä¸‹è½½å•ä¸ªæ–‡ä»¶
+	 * ÏÂÔØµ¥¸öÎÄ¼ş
 	 * @param id
 	 * @return
 	 */
 	public boolean downloadFile(String id,HttpServletResponse response){
 		MyFile myFile=null;
 		if(id.equals("zip")){
-			//ä¸‹è½½æ‰“åŒ…çš„æ–‡ä»¶
-//			myFile=fileDao.selectMyfileById(new Long(id));
+			//ÏÂÔØ´ò°üµÄÎÄ¼ş
+			myFile=new MyFile();
+			myFile.setName("temp.zip");
+			myFile.setLocation(FileController.FILE_BASE_PATH+"temp.zip");
+			File tempfile=new File(myFile.getLocation());
+			if(tempfile.exists()){
+				myFile.setSize(tempfile.length());
+			}else{
+				return false;
+			}
 		}else{
-			//ä¸‹è½½å•ä¸ªæ–‡ä»¶
+			//ÏÂÔØµ¥¸öÎÄ¼ş
 			myFile=fileDao.selectMyfileById(new Long(id));
 			if(myFile.getType().equals("folder")){
-				//è·³è½¬åˆ°ä¸‹è½½å¤šä¸ªæ–‡ä»¶
+				//Ìø×ªµ½ÏÂÔØ¶à¸öÎÄ¼ş
+				String[] idlist={id};
+				return downloadFiles(idlist, response);
 			}
 		}
-		if(myFile==null){
-			return false;
-		}
 		
-		//å¼€å§‹ä¸‹è½½
+		//¿ªÊ¼ÏÂÔØ
 		String fileName = "unknown";
 		try {
 			fileName = URLEncoder.encode(myFile.getName(), "UTF-8").replace("+", "%20");
 		} catch (UnsupportedEncodingException e1) {
 			e1.printStackTrace();
-			return false;
 		}
 		
 		response.reset();
@@ -370,7 +379,6 @@ public class FileService {
 			out.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
-			return false;
 		}finally{
 			if(out!=null){
 				out.close();
@@ -383,6 +391,66 @@ public class FileService {
 				}
 			}
 		}
+		return true;
+	}
+	
+	/**
+	 * ÏÂÔØ¶à¸öÎÄ¼ş
+	 * @param idlist
+	 * @param response
+	 * @return
+	 */
+	public boolean downloadFiles(String[] idlist,HttpServletResponse response){
+		List<MyFile> filelist = new ArrayList<MyFile>();
+		// »ñÈ¡ÎÄ¼şÁĞ
+		for (String id : idlist) {
+			MyFile file = fileDao.selectMyfileById(new Long(id));
+			if (file != null)
+				filelist.add(file);
+		}
+		//±éÀúÎÄ¼ş¼Ğ
+		for(int i=0;i<filelist.size();i++){
+			if(filelist.get(i).getType().equals("folder")){
+				List<MyFile> templist = fileDao.selectMyfileByParent(filelist.get(i).getId());
+				filelist.addAll(templist);
+				filelist.remove(i);
+				i--;
+			}
+		}
+		if(filelist.isEmpty()){
+			return false;
+		}
+		
+		String tmpFileName = "temp.zip";  
+        byte[] buffer = new byte[1024];  
+        String strZipPath = FileController.FILE_BASE_PATH+tmpFileName;
+        try {
+            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(  
+                        strZipPath));  
+            // ÏÂÔØµÄÎÄ¼ş¼¯ºÏ
+            for (MyFile file:filelist) {  
+                FileInputStream fis = new FileInputStream(file.getLocation()); 
+                out.putNextEntry(new ZipEntry(file.getName())); 
+                 //ÉèÖÃÑ¹ËõÎÄ¼şÄÚµÄ×Ö·û±àÂë£¬²»È»»á±ä³ÉÂÒÂë  
+                out.setEncoding("GBK");  
+                int len;  
+                // ¶ÁÈëĞèÒªÏÂÔØµÄÎÄ¼şµÄÄÚÈİ£¬´ò°üµ½zipÎÄ¼ş  
+                while ((len = fis.read(buffer)) > 0) {  
+                    out.write(buffer, 0, len);  
+                }  
+                out.closeEntry();  
+                fis.close();  
+            }
+			out.close();
+			downloadFile("zip", response);
+			//É¾³ıÁÙÊ±ÎÄ¼ş
+			File tempfile = new File(strZipPath);
+			if (tempfile.exists()) {
+				tempfile.delete();
+			}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 		return true;
 	}
 }

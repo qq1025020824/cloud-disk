@@ -4,11 +4,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class MainController {
+public class MainController extends BaseController{
 
-    @RequestMapping(value = {"/","/index.jsp"})
+    @RequestMapping(value = {"/","/{test}"})
     public String main(){
-        return "index";
+    	if(this.getUserID()!=null){
+    		return "redirect:/file/view?folder=home";
+    	}else{
+    		return "redirect:/login";
+    	}
     }
 }
 
