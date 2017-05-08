@@ -103,10 +103,11 @@
 
 		<!-- 上传文件 -->
 		<div id="uploadfrom" class="hiddenfrom">
-			<form method="post"
-				action="<%=request.getContextPath()%>/file/doupload"
+			<form method="post" id="theuploadfrom"
+				action="#"
 				enctype="multipart/form-data">
 				<input type="hidden" name="folder" value="<%=folderid%>" />
+				<input type="hidden" id="md5input" name="md5" />
 				<div class="form-group">
 					<label for="exampleInputFile">上传文件</label> <input type="file"
 						name="uploadfile" id="exampleInputFile">
@@ -120,6 +121,7 @@
 		<div id="mkdirfrom" class="hiddenfrom">
 			<form method="post" action="<%=request.getContextPath()%>/file/mkdir">
 				<input type="hidden" name="folder" value="<%=folderid%>" />
+				<input type="hidden" id="md5input" name="md5" />
 				<div class="form-group">
 					<label for="InputName">新建文件夹</label> <input type="text" name="name"
 						class="form-control" id="InputName" placeholder="新建文件夹">
@@ -139,6 +141,7 @@
 
 	<!-- script -->
 	<script src="<%=request.getContextPath()%>/static/js/jquery.min.js"></script>
+	<script src="<%=request.getContextPath()%>/static/js/browser-md5-file.min.js"></script>
 	<script>
 		$(function() {
 			//上传表单
@@ -190,6 +193,23 @@
 					$('#checkfrom').submit();
 				}
 			})
+			
+			//上传 md5
+			$('#exampleInputFile').bind('change', function(event) {
+				var file = event.target.files[0];
+				browserMD5File(file, function(err, md5) {
+					$('#md5input').val(md5);
+					$.get("<%=request.getContextPath()%>/file/checkmd5",{ md5:md5 },function(data){
+						var path;
+						if (data == "exist") {
+							path="<%=request.getContextPath()%>/file/quickupload";
+						} else {
+							path="<%=request.getContextPath()%>/file/doupload";
+						}
+						$('#theuploadfrom').attr("action", path);
+					});
+				});
+			});
 		})
 	</script>
 	<!-- Include all compiled plugins (below), or include individual files as needed -->

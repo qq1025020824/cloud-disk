@@ -42,7 +42,7 @@ public class FileController extends BaseController{
 	//上传文件
 	@SuppressWarnings("finally")
 	@RequestMapping(value = "/doupload",method = RequestMethod.POST)
-	public String doUpload(@RequestParam Long folder,@RequestParam MultipartFile uploadfile){
+	public String doUpload(@RequestParam Long folder,@RequestParam String md5,@RequestParam MultipartFile uploadfile){
 		if(uploadfile.isEmpty()){
 			this.sendMessage("文件为空，请重新选择。");
 			return "redirect:/file/view?folder="+folder.toString();
@@ -76,6 +76,8 @@ public class FileController extends BaseController{
 				localfile.delete();
 				this.sendMessage("系统错误，请稍后再试。");
 				return "redirect:/file/view?folder="+folder.toString();
+			}else{
+				fileService.addFileMd5(file.getId(), md5);
 			}
 			
 			//更新用户信息
@@ -92,6 +94,47 @@ public class FileController extends BaseController{
 		}finally{
 			return "redirect:/file/view?folder="+folder.toString();
 		}
+	}
+	
+	// 极速上传文件
+	@RequestMapping(value = "/quickupload", method = RequestMethod.POST)
+	public String quickUpload(@RequestParam Long folder, @RequestParam String md5,
+			@RequestParam MultipartFile uploadfile) {
+		if (uploadfile.isEmpty()) {
+			this.sendMessage("文件为空，请重新选择。");
+			return "redirect:/file/view?folder=" + folder.toString();
+		}
+		String fileName = uploadfile.getOriginalFilename();
+		String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+		// 获取网盘中已存在文件
+		MyFile existfile = fileService.getFileByMd5(md5);
+
+		// 判断剩余空间
+		if (existfile.getSize() > fileService.getFreeSize(this.getUserID())) {
+			this.sendMessage("剩余空间不足。");
+			return "redirect:/file/view?folder=" + folder.toString();
+		}
+
+		// 操作数据库
+		MyFile file = new MyFile();
+		file.setUser_id(getUserID());
+		file.setParent_id(folder);
+		file.setName(fileName);
+		file.setType(suffix.toLowerCase());
+		file.setSize(existfile.getSize());
+		file.setLocation(existfile.getLocation());
+		if (fileService.addFile(file)) {
+			fileService.addFileMd5(file.getId(), md5);
+			this.sendMessage("极速上传成功！");
+		}
+
+		// 更新用户信息
+		UserInfoVO uif = userService.updateUserInfo(this.getUserID());
+		if (uif != null) {
+			sendUserInfo(uif);
+		}
+		return "redirect:/file/view?folder=" + folder.toString();
 	}
 	
 	/**
@@ -193,5 +236,21 @@ public class FileController extends BaseController{
 			}
 		}
 		return "redirect:/file/view?folder="+folder.toString();
+	}
+	
+	/**
+	 * 校验md5
+	 * @param md5
+	 * @param response
+	 * @throws IOException 
+	 */
+	@RequestMapping(value = "/checkmd5")
+	public void checkMd5(@RequestParam String md5,HttpServletResponse response) throws IOException{
+		Log.debug("!!!md5:{}", md5);
+		if(fileService.isMd5Exist(md5)){
+			response.getWriter().write("exist");
+		}else{
+			response.getWriter().write("notexist");
+		}
 	}
 }

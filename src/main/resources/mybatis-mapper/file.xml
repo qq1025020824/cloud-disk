@@ -72,4 +72,29 @@
         DELETE FROM myfile WHERE id = #{id}
 	</delete>  
 	
+	<select id="selectFileMd5ByMd5" parameterType="java.lang.String"
+		resultType="com.abo.model.FileMd5">
+		select
+		id,file_id,md5 from
+		filemd5 where md5= #{md5}
+	</select>
+	
+	<select id="selectMd5Byfile" parameterType="Long"
+		resultType="java.lang.String">
+		select
+		md5 from
+		filemd5 where file_id= #{file_id}
+	</select>
+	
+	<insert id="insertFileMd5" parameterType="com.abo.model.FileMd5"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		filemd5(file_id,md5)
+		values(#{file_id},#{md5})
+	</insert>
+	
+	<delete id="deleteFileMd5ByFile" parameterType="Long">  
+        DELETE FROM filemd5 WHERE file_id = #{file_id}
+	</delete>  
+	
 </mapper>

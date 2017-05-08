@@ -27,6 +27,7 @@ import org.springframework.ui.Model;
 import com.abo.controller.FileController;
 import com.abo.dao.FileDao;
 import com.abo.model.Disk;
+import com.abo.model.FileMd5;
 import com.abo.model.MyFile;
 import com.abo.vo.MyFileVO;
 
@@ -255,6 +256,24 @@ public class FileService {
 		fileDao.updateDisk(disk);
 		return true;
 	}
+	
+	/**
+	 * 添加FileMd5信息
+	 * @param file_id
+	 * @param md5
+	 * @return
+	 */
+	@Transactional
+	public boolean addFileMd5(Long file_id,String md5){
+		FileMd5 fm5 = new FileMd5();
+		fm5.setFile_id(file_id);
+		fm5.setMd5(md5);
+		if(fileDao.insertFileMd5(fm5)>0){
+			return true;
+		}else{
+			return false;
+		}
+	}
 
 	/**
 	 * 向网盘添加文件夹
@@ -307,12 +326,18 @@ public class FileService {
 					fileDao.delectMyFileByID(file.getId());
 				} else {
 					// 如果为文件
-					// 删除磁盘文件
-					Log.debug("!!!file path:{}", file.getLocation());
-					new File(file.getLocation()).delete();
-					Log.debug("!!!after delete()");
+					//查询FileMd5
+					List<FileMd5> fm5list=fileDao.selectFileMd5ByMd5(fileDao.selectMd5Byfile(file.getId()));
+					if(fm5list.size()<=1){
+						// 删除磁盘文件
+						Log.debug("!!!file path:{}", file.getLocation());
+						new File(file.getLocation()).delete();
+						Log.debug("!!!after delete()");
+					}
 					// 删除数据库文件
 					fileDao.delectMyFileByID(file.getId());
+					//删除md5
+					fileDao.deleteFileMd5ByFile(file.getId());
 					// 更新网盘信息
 					Disk disk = fileDao.selectDiskByUserid(file.getUser_id());
 					disk.setUsedsize(disk.getUsedsize() - file.getSize());
@@ -452,5 +477,34 @@ public class FileService {
             e.printStackTrace();
         }
 		return true;
+	}
+	
+	/**
+	 * 通过md5验证文件是否存在
+	 * @param md5
+	 * @return false不存在,true存在
+	 */
+	public boolean isMd5Exist(String md5){
+		List<FileMd5> fmlist=fileDao.selectFileMd5ByMd5(md5);
+		if(fmlist.isEmpty()){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	
+	/**
+	 * 通过md5获取一个MyFile
+	 * @param md5
+	 * @return 没有则返回null
+	 */
+	public MyFile getFileByMd5(String md5){
+		List<FileMd5> fmlist=fileDao.selectFileMd5ByMd5(md5);
+		if(fmlist.isEmpty()){
+			return null;
+		}else{
+			return fileDao.selectMyfileById(fmlist.get(0).getFile_id());
+		}
 	}
 }

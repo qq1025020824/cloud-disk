@@ -3,6 +3,7 @@ package com.abo.dao;
 import java.util.List;
 
 import com.abo.model.Disk;
+import com.abo.model.FileMd5;
 import com.abo.model.MyFile;
 
 public interface FileDao {
@@ -70,5 +71,33 @@ public interface FileDao {
 	 * @return
 	 */
 	void delectMyFileByID(Long id);
+	
+	/**
+	 * 通过md5查询FileMd5列
+	 * @param md5
+	 * @return
+	 */
+	List<FileMd5> selectFileMd5ByMd5(String md5);
+	
+	/**
+	 * 通过file_id获取文件md5值
+	 * @param file_id
+	 * @return
+	 */
+	String selectMd5Byfile(Long file_id);
+	
+	/**
+	 * 向FileMd5表中插入一行
+	 * @param filemd5
+	 * @return 成功插入行数 1/0
+	 * id自动产生并填入
+	 */
+	int insertFileMd5(FileMd5 filemd5);
+	
+	/**
+	 * 通过file_id删除FileMd5表中的一行
+	 * @param file_id
+	 */
+	void deleteFileMd5ByFile(Long file_id);
 	
 }
