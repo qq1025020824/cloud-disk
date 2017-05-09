@@ -81,12 +81,6 @@ public class FileController extends BaseController{
 			}else{
 				fileService.addFileMd5(file.getId(), md5);
 			}
-			
-			//更新用户信息
-			UserInfoVO uif=userService.updateUserInfo(this.getUserID());
-			if(uif!=null){
-				sendUserInfo(uif);
-			}
 		}catch(IOException e){
 			Log.debug("上传文件错误");
 			if(localfile.exists()){
@@ -131,11 +125,6 @@ public class FileController extends BaseController{
 			this.sendMessage("极速上传成功！");
 		}
 
-		// 更新用户信息
-		UserInfoVO uif = userService.updateUserInfo(this.getUserID());
-		if (uif != null) {
-			sendUserInfo(uif);
-		}
 		return "redirect:/file/view?folder=" + folder.toString();
 	}
 	
@@ -157,6 +146,11 @@ public class FileController extends BaseController{
 		//判断folder
 		if(folder.equals("home")){
 			if(fileService.showUserRoot(userid, model)){
+				//更新用户信息
+				UserInfoVO uif=userService.updateUserInfo(this.getUserID());
+				if(uif!=null){
+					sendUserInfo(uif);
+				}
 				return "file/view";
 			}else{
 				this.sendMessage("系统错误，请稍后再试。");
@@ -164,6 +158,11 @@ public class FileController extends BaseController{
 			}
 		}else{
 			if(fileService.showFolder(new Long(folder), userid, model)){
+				//更新用户信息
+				UserInfoVO uif=userService.updateUserInfo(this.getUserID());
+				if(uif!=null){
+					sendUserInfo(uif);
+				}
 				return "file/view";
 			}else{
 				//错误，跳转用户根目录
@@ -206,12 +205,6 @@ public class FileController extends BaseController{
 		String[] idlist=request.getParameterValues("id");
 		if(!fileService.delectFile(idlist)){
 			this.sendMessage("系统错误，请稍候再试。");
-		}else{
-			//更新用户信息
-			UserInfoVO uif=userService.updateUserInfo(this.getUserID());
-			if(uif!=null){
-				sendUserInfo(uif);
-			}
 		}
 		return "redirect:/file/view?folder="+folder.toString();
 	}

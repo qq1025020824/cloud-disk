@@ -370,6 +370,9 @@ public class FileService {
 		}else{
 			//下载单个文件
 			myFile=fileDao.selectMyfileById(new Long(id));
+			if(myFile==null){
+				return false;
+			}
 			if(myFile.getType().equals("folder")){
 				//跳转到下载多个文件
 				String[] idlist={id};
