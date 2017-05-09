@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.abo.config.DiskProperty;
 import com.abo.model.MyFile;
 import com.abo.service.FileService;
 import com.abo.service.UserService;
@@ -31,7 +32,8 @@ public class FileController extends BaseController{
     private FileService fileService;
 	@Autowired
     private UserService userService;
-	public static String FILE_BASE_PATH ="E:/Programing/temp/clouddisk/";
+	@Autowired
+	private DiskProperty diskProperty;
 	
 	//无效路径
 	@RequestMapping(value = "/{test}")
@@ -58,7 +60,7 @@ public class FileController extends BaseController{
 		}
 		
 		String localName=new Date().getTime()+"."+suffix;
-		File localfile=new File(FILE_BASE_PATH,localName);
+		File localfile=new File(diskProperty.getDiskpath(),localName);
 		//开始上传
 		try{
 			FileUtils.copyInputStreamToFile(uploadfile.getInputStream(),localfile);
@@ -70,7 +72,7 @@ public class FileController extends BaseController{
 			file.setName(fileName);
 			file.setType(suffix.toLowerCase());
 			file.setSize(size);
-			file.setLocation(FILE_BASE_PATH+localName);
+			file.setLocation(diskProperty.getDiskpath()+localName);
 			if(!fileService.addFile(file)){
 				//数据库错误，删除文件
 				localfile.delete();

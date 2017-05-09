@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean
+<!-- 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
 		id="propertyPlaceholderConfigurer">
 		<property name="locations">
@@ -12,7 +12,7 @@
 				<value>classpath:conf/database.properties</value>
 			</list>
 		</property>
-	</bean>
+	</bean> -->
 
 	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
 		init-method="init" destroy-method="close">

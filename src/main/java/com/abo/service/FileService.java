@@ -12,9 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Stack;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipOutputStream;
 import org.slf4j.Logger;
@@ -23,19 +21,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-
-import com.abo.controller.FileController;
+import com.abo.config.DiskProperty;
 import com.abo.dao.FileDao;
 import com.abo.model.Disk;
 import com.abo.model.FileMd5;
 import com.abo.model.MyFile;
 import com.abo.vo.MyFileVO;
 
-
 @Service
 public class FileService {
 	@Autowired
 	private FileDao fileDao;
+	@Autowired
+	private DiskProperty diskProperty;
+	
 	private static final Logger Log = LoggerFactory.getLogger(FileService.class);
 
 	/**
@@ -361,7 +360,7 @@ public class FileService {
 			//下载打包的文件
 			myFile=new MyFile();
 			myFile.setName("temp.zip");
-			myFile.setLocation(FileController.FILE_BASE_PATH+"temp.zip");
+			myFile.setLocation(diskProperty.getDiskpath()+"temp.zip");
 			File tempfile=new File(myFile.getLocation());
 			if(tempfile.exists()){
 				myFile.setSize(tempfile.length());
@@ -448,7 +447,7 @@ public class FileService {
 		
 		String tmpFileName = "temp.zip";  
         byte[] buffer = new byte[1024];  
-        String strZipPath = FileController.FILE_BASE_PATH+tmpFileName;
+        String strZipPath = diskProperty.getDiskpath()+tmpFileName;
         try {
             ZipOutputStream out = new ZipOutputStream(new FileOutputStream(  
                         strZipPath));  

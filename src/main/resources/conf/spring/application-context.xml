@@ -14,9 +14,10 @@
     </context:component-scan>
 
     <bean class = "org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
-          id="propertyPlaceholderConfigurer" >
+          id="propertyPlaceholderConfigurer">
         <property name="locations" >
             <list>
+            	<value>classpath:disk.properties</value>
                 <value>classpath:conf/database.properties</value>
             </list>
         </property>

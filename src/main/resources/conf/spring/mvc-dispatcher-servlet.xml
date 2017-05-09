@@ -15,6 +15,16 @@
                                 expression="org.springframework.stereotype.Controller" />
     </context:component-scan>
     <mvc:annotation-driven/>
+    
+    <bean class = "org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+          id="propertyPlaceholderConfigurer">
+        <property name="locations" >
+            <list>
+            	<value>classpath:disk.properties</value>
+                <value>classpath:conf/database.properties</value>
+            </list>
+        </property>
+    </bean>
 
     <mvc:resources mapping="/static/**" location="/WEB-INF/static/" />
 

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.abo.config.DiskProperty;
 import com.abo.dao.FileDao;
 import com.abo.dao.UserDao;
 import com.abo.model.Disk;
@@ -24,7 +25,9 @@ public class UserService {
 	private UserDao userDao;
 	@Autowired
 	private FileDao fileDao;
-	private static final long DEFAULT_TOTAL_SIZE = 1024 * 1024 * 5; // 默认空间5M
+	@Autowired
+	private DiskProperty diskProperty;
+	
 	private static final Logger Log = LoggerFactory.getLogger(UserService.class);
 	/**
 	 * 验证手机是否被注册
@@ -60,7 +63,7 @@ public class UserService {
 		// 分配网盘
 		Disk disk = new Disk();
 		disk.setUser_id(user.getId());
-		disk.setTotalsize(DEFAULT_TOTAL_SIZE);
+		disk.setTotalsize(diskProperty.getTotalsize());
 		disk.setUsedsize(0);
 		if (fileDao.insertDisk(disk) == 0) {
 			/* 错误处理 */
