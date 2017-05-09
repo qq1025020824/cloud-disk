@@ -327,16 +327,17 @@ public class FileService {
 					// 如果为文件
 					//查询FileMd5
 					List<FileMd5> fm5list=fileDao.selectFileMd5ByMd5(fileDao.selectMd5Byfile(file.getId()));
-					if(fm5list.size()<=1){
-						// 删除磁盘文件
-						Log.debug("!!!file path:{}", file.getLocation());
-						new File(file.getLocation()).delete();
-						Log.debug("!!!after delete()");
-					}
 					// 删除数据库文件
 					fileDao.delectMyFileByID(file.getId());
 					//删除md5
 					fileDao.deleteFileMd5ByFile(file.getId());
+					// 删除磁盘文件
+					if(fm5list.size()<=1){
+						Log.debug("!!!file path:{}", file.getLocation());
+						File localfile = new File(file.getLocation());
+						if(localfile.exists()) localfile.delete();
+						Log.debug("!!!after delete()");
+					}
 					// 更新网盘信息
 					Disk disk = fileDao.selectDiskByUserid(file.getUser_id());
 					disk.setUsedsize(disk.getUsedsize() - file.getSize());
